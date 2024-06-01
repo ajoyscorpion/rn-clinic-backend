@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-3%97pag=1bo#9yw&a+u#g2npb!5k==lx7c4!gx9v0fcx75x0p_"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['rn-clinic-backend.onrender.com', 'localhost', '127.0.0.1']
 
