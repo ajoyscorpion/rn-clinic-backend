@@ -11,7 +11,11 @@ import traceback
 from datetime import datetime
 import os
 import resend
+from django.http import HttpResponse
 
+
+def home(request):
+    return HttpResponse("RN Clinic - Doctor Booking App Server ")
 
 
 def doctor_list(request):
