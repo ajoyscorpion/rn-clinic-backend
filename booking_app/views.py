@@ -28,6 +28,7 @@ def doctor_list(request):
 
 
 def view_doctor(request,id):
+    print("Inside View")
     try:
         doctor = Doctors.objects.get(pk=id)
         doctor_data = {
@@ -38,7 +39,10 @@ def view_doctor(request,id):
             'rating':doctor.rating
         }
 
+        print(doctor)
+
         return JsonResponse(doctor_data)
+
 
     except Doctors.DoesNotExist:
         return JsonResponse({'error':'Doctor not found'},status=404)
@@ -203,7 +207,8 @@ def my_bookings(request):
                 'online':booking.online,
                 'virtual_link':booking.virtual_link,
                 'doctor_pic':booking.doctor.img.url,
-                'doctor_name':booking.doctor.name
+                'doctor_name':booking.doctor.name,
+                'doctor_id':booking.doctor.id
             }for booking in myBooking]
 
             print(bookings_data)
@@ -281,9 +286,10 @@ def update_date_time(request):
             return JsonResponse({'error':'Invalid request method'}, status = 405)
 
 
-def booked_dates_times(request):
+def booked_dates_times(request,doctorId):
     if request.method == 'GET':
-        appointments = Appointment.objects.filter(booking_status="Booked")
+        doctor = Doctors.objects.get(pk=doctorId)
+        appointments = Appointment.objects.filter(doctor=doctor,booking_status="Booked")
         print(appointments)
 
         bookedDatesTimes = [
@@ -387,28 +393,50 @@ def getUserDetails(request,user_id):
     try:
         print(user_id)
         user = CustomUser.objects.get(customer_id = user_id)
+        print("THu")
         print(user)
+        print("blaa")
 
-        profile = UserProfile.objects.get(user_id = user.pk)
-        print(profile)
-
-        user_data = {
-            "name":user.name,
-            "email":user.email,
-            "phone":user.phone,
-            "customer_id":user.customer_id,
-            "gender":profile.gender,
-            "dob":profile.dob,
-            "address1":profile.address1,
-            "address2":profile.address2,
-            "city":profile.city,
-            "state":profile.state,
-            "pincode":profile.pincode,
-            "emPhoneNo":profile.em_phone_no,
-            "bloodGroup":profile.blood_group,
-            "profileImage":profile.profile_image.url if profile.profile_image else None
-        }
-        return JsonResponse({'success': 'Successfully acheived', 'data':user_data},status=200)
+        # profile = UserProfile.objects.get(user_id = user.pk)
+        # print(profile)
+        try:
+                profile = UserProfile.objects.get(user_id=user.pk)
+                user_data = {
+                    "name": user.name,
+                    "email": user.email,
+                    "phone": user.phone,
+                    "customer_id": user.customer_id,
+                    "gender": profile.gender,
+                    "dob": profile.dob,
+                    "address1": profile.address1,
+                    "address2": profile.address2,
+                    "city": profile.city,
+                    "state": profile.state,
+                    "pincode": profile.pincode,
+                    "emPhoneNo": profile.em_phone_no,
+                    "bloodGroup": profile.blood_group,
+                    "profileImage": profile.profile_image.url if profile.profile_image else None
+                }
+        except UserProfile.DoesNotExist:
+                # If the user profile does not exist, return the user data without profile details
+                user_data = {
+                    "name": user.name,
+                    "email": user.email,
+                    "phone": user.phone,
+                    "customer_id": user.customer_id,
+                    "gender": None,
+                    "dob": None,
+                    "address1": None,
+                    "address2": None,
+                    "city": None,
+                    "state": None,
+                    "pincode": None,
+                    "emPhoneNo": None,
+                    "bloodGroup": None,
+                    "profileImage": None
+                }
+        print(user_data)
+        return JsonResponse({'success': 'Successfully acheived','data':user_data },status=200)
     except:
         return JsonResponse({'error' : 'Invalid request method'},status=405)
 
