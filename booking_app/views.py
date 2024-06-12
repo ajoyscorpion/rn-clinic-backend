@@ -54,7 +54,6 @@ def sign_up(request):
     if request.method == 'POST':
 
         data = json.loads(request.body)
-
         name = data.get('name')
         email = data.get('email')
         password = data.get('pswd')
@@ -259,7 +258,6 @@ def update_date_time(request):
             print(data)
             print(date_of_appointment_str)
             print(time_of_appointment_str)
-            print("fuck")
 
             update_date_of_appointment = parse_date(date_of_appointment_str)
             update_time_of_appointment = parse_time(time_of_appointment_str)
